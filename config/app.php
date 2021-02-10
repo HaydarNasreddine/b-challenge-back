@@ -93,6 +93,19 @@ return [
     |
     */
 
+    'mysql' => [
+        'driver'    => 'mysql',
+        'host'      => env('DB_HOST', 'localhost'),
+        'port'      => env('DB_PORT', '3306'),
+        'database'  => env('DB_DATABASE', 'bchallenge'),
+        'username'  => env('DB_USERNAME', 'bchallenge'),
+        'password'  => env('DB_PASSWORD', 'bchallenge'),
+        'charset'   => 'utf8',
+        'collation' => 'utf8_unicode_ci',
+        'prefix'    => '',
+        'strict'    => false,
+    ],
+
     'fallback_locale' => 'en',
 
     /*
