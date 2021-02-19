@@ -14,6 +14,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('v1.0')->group(function () {
+
+    Route::get('version', function () {
+        return 'API v1.0';
+    });
+
+    Route::post("login", 'UserController@login');
+    Route::post("logout", 'UserController@logout');
+
+    Route::prefix('users')->group(function () {
+        Route::post("", 'UserController@create');
+        Route::get("", "UserController@getAll");
+        Route::get('filter', 'UserController@filter');
+        Route::get('average', 'UserController@average');
+        Route::post("update", 'UserController@update');
+        // Route::group(['middleware' => 'auth:api'], function () {
+        // });
+    });
 });
