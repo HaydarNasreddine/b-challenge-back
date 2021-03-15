@@ -17,6 +17,16 @@ class BaseRepository
         return $this->model->create($attributes);
     }
 
+    public function update(array $attributes): Model
+    {
+        return $this->model->update($attributes);
+    }
+
+    public function updateWhere(array $whereClauses, array $attributes): INT
+    {
+        return $this->model->where($whereClauses)->update($attributes);
+    }
+
     public function find($id): ?Model
     {
         return $this->model->find($id);
@@ -58,7 +68,7 @@ class BaseRepository
             $query = $query->get();
         }
 
-        if(isset($options['count']))
+        if (isset($options['count']))
             $query = $query->count();
 
         return $query;

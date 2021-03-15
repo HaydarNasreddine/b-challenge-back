@@ -63,4 +63,9 @@ class UserRepo extends BaseRepository
     {
         return UserRole::create(['user_id' => $user, 'role_id' => $role]);
     }
+
+    public function getRoles($user) 
+    {
+        return UserRole::where('user_id', $user)->get();
+    }
 }

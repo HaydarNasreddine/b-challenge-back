@@ -7,6 +7,8 @@ use App\Repositories\UserRepo;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Constants\Roles;
+use Illuminate\Validation\UnauthorizedException;
 
 class UserService
 {
@@ -25,15 +27,30 @@ class UserService
         return $user;
     }
 
+    private function checkRole($roles, $role)
+    {
+        foreach ($roles as $r) {
+            if ($r->role_id == $role) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function login($request)
     {
         $user = $this->userRepo->findByEmail($request['email']);
 
         if ($user)
             if (Hash::check($request['password'], $user->password)) {
-                $token = (new TokenService())->create($user);
-                return ['token' => $token];
+                if ($this->checkRole($this->getRoles($user->id), Roles::ADMIN)) {
+                    $token = (new TokenService())->create($user);
+                    return ['token' => $token];
+                } else {
+                    throw new UnauthorizedException("Not allowed to login");
+                }
             }
+
 
         throw new AuthenticationException('Wrong Credentials');
     }
@@ -56,8 +73,8 @@ class UserService
 
     public function average($request)
     {
-        if(isset($request['option']))
-        return $this->userRepo->average($request['option']);
+        if (isset($request['option']))
+            return $this->userRepo->average($request['option']);
         else {
             return [
                 'last24Hours' => $this->userRepo->average(Average::LAST_24_HOURS),
@@ -74,10 +91,17 @@ class UserService
         return $this->userRepo->addRole($user, $role);
     }
 
-    // public function checkVat($vat) {
+    public function getRoles($user)
+    {
+        return $this->userRepo->getRoles($user);
+    }
 
-    //     $result = validateVat($vat);
-    //     if(!$result) throw new GlobalException(['key' => Exptions::WRONG_CREDENTIALS]);
-
-    // }
+    public function getNewRegistrarsCount()
+    {
+        $newUsers = $this->userRepo->filter([
+            'email_sent' => ['value' => true, 'operator' => '=']
+        ]);
+        $this->userRepo->updateWhere([['email_sent', '=', false]], ['email_sent' => true]);
+        return count($newUsers);
+    }
 }

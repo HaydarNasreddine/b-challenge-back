@@ -24,9 +24,8 @@ Route::prefix('v1.0')->group(function () {
     Route::post("logout", 'UserController@logout');
 
     Route::prefix('users')->group(function () {
-
         Route::post("", 'UserController@create');
-        Route::group(['middleware' => 'auth:api'], function () {
+        Route::group(['middleware' => ['auth:api', 'admin']], function () {
             Route::get("", "UserController@getAll");
             Route::get('filter', 'UserController@filter');
             Route::get('average', 'UserController@average');

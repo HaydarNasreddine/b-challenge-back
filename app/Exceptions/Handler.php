@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Helpers\HTTPResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\UnauthorizedException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -51,6 +52,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        return parent::render($request, $exception);
+        $code = 401;
+        if ($exception instanceof UnauthorizedException) {
+            $code = 403;
+        }
+        return response()->json(['message' => $exception->getMessage(), 'code' => $code], $code);
     }
 }
