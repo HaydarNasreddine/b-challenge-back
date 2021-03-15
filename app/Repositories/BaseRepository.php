@@ -32,7 +32,7 @@ class BaseRepository
         if (isset($value['operator']) && isset($value['value']))
             $query = $query->where($key, $value['operator'], $value['value']);
         else
-            $query = $query->where($key, $value);
+            $query = $query->where($key, 'like',  '%' . $value . '%');
 
         return $query;
     }

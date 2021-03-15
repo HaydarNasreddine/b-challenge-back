@@ -25,8 +25,8 @@ class UserFilterRequest extends BaseFilterRequest
     public function rules()
     {
         $this->filter['id'] = 'integer';
-        $this->filter['email'] = 'string|email|max:255';
-        $this->filter['name'] = 'string';
+        $this->filter['email'] = 'string|max:255';
+        $this->filter['first_name'] = 'string';
         return $this->filter;
     }
 
